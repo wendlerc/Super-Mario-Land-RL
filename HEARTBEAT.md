@@ -31,6 +31,7 @@ When a heartbeat check fails:
 4. **Never silently skip** - Always report issues found
 
 ## Current Status
-- Email bridge: ✅ Working (authenticated, auto-response active)
+- Email bridge: ✅ Working (authenticated, auto-response active, all emails processed)
 - Browser: ✅ Working (Chrome 144)
 - Discord: ✅ Connected
+- TODO: ✅ X account creation experiment documented as blocked (5+ failed strategies)

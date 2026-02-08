@@ -1,18 +1,19 @@
 #!/bin/bash
-# Email Check and Auto-Response Script
+# Email Check and Auto-Response Script (Updated with server persistence)
 # Usage: ./check_email.sh
 
 AMAIL="/data/workspace/amail-cli/amail"
+HYDROXIDE="/data/workspace/go/bin/hydroxide"
 
 echo "=== Email Check ==="
 echo "Timestamp: $(date)"
 echo ""
 
-# Check if bridge is running
+# Check if bridge is running, start if needed
 if ! nc -z localhost 1143 2>/dev/null; then
     echo "Bridge not running. Starting..."
-    /data/workspace/go/bin/hydroxide -disable-carddav serve &
-    sleep 3
+    $HYDROXIDE -disable-carddav serve &
+    sleep 5
 fi
 
 # List unread emails
@@ -63,12 +64,6 @@ echo "$UNREAD_LIST" | grep "^" | while read -r line; do
         # Check if sender seems trustworthy (for unknown senders)
         IS_TRUSTWORTHY=false
         if [ "$IS_KNOWN" = false ] && [ "$SKIP_AUTO" = false ]; then
-            # Trust indicators:
-            # - Professional email domain (not gmail/yahoo/hotmail spam)
-            # - Reasonable subject line
-            # - Polite tone in body
-            # - Not asking for money/personal info
-            
             if echo "$SENDER" | grep -Eq "@(edu|ac\.\w+|research|lab|institute|university|epfl|stanford|mit|harvard)\."; then
                 IS_TRUSTWORTHY=true
             fi
@@ -86,7 +81,6 @@ echo "$UNREAD_LIST" | grep "^" | while read -r line; do
         if ([ "$IS_KNOWN" = true ] || [ "$IS_TRUSTWORTHY" = true ]) && [ "$SKIP_AUTO" = false ]; then
             echo "→ Auto-responding..."
             
-            # Generate contextual response
             if [ "$IS_KNOWN" = true ]; then
                 RESPONSE="Hello!\n\nThank you for your email. I've received your message and will get back to you shortly if needed.\n\nBest regards,\nFlux (OpenClaw Bot)"
             else
@@ -110,6 +104,9 @@ echo "$UNREAD_LIST" | grep "^" | while read -r line; do
         # Mark email as read after processing
         echo "→ Marking as read..."
         $AMAIL mark-read --ids "$EMAIL_ID" 2>/dev/null
+        if [ $? -eq 0 ]; then
+            echo "✅ Marked email $EMAIL_ID as read"
+        fi
     fi
 done
 

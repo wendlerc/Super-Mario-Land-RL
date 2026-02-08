@@ -2,8 +2,7 @@
 # Email Check and Auto-Response Script
 # Usage: ./check_email.sh
 
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-AMAIL="$SCRIPT_DIR/amail-cli/amail"
+AMAIL="/data/workspace/amail-cli/amail"
 
 echo "=== Email Check ==="
 echo "Timestamp: $(date)"
@@ -32,8 +31,8 @@ if echo "$UNREAD_LIST" | grep -q "No unread emails"; then
 fi
 
 # Parse unread emails and respond if appropriate
-echo "$UNREAD_LIST" | while read -r line; do
-    if [[ $line =~ ID:\ ([0-9]+) ]]; then
+echo "$UNREAD_LIST" | grep "^" | while read -r line; do
+    if [[ $line =~ ^([0-9]+): ]]; then
         EMAIL_ID="${BASH_REMATCH[1]}"
         
         # Read the email
@@ -107,6 +106,10 @@ echo "$UNREAD_LIST" | while read -r line; do
                 echo "→ Skipping auto-response (unknown/untrustworthy sender)"
             fi
         fi
+        
+        # Mark email as read after processing
+        echo "→ Marking as read..."
+        $AMAIL mark-read --ids "$EMAIL_ID" 2>/dev/null
     fi
 done
 

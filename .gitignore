@@ -1,0 +1,43 @@
+# ROMs (copyrighted)
+roms/*.gb
+roms/*.gbc
+roms/*.nes
+roms/*.snes
+roms/*.zip
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+
+# Node
+node_modules/
+npm-debug.log
+
+# Generated GIFs (large files)
+*.gif
+
+# Browser libs (large)
+browser-libs/
+chrome-install/
+
+# Credentials
+.env.email
+.ssh/
+
+# Logs
+logs/
+*.log
+
+# Art outputs (generated)
+nightly-builds/
+*.png
+*.jpg
+*.html
+
+# Cache
+*.deb

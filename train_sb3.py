@@ -8,7 +8,6 @@ import sys
 import gymnasium as gym
 from gymnasium import spaces
 import numpy as np
-import cv2
 from PIL import Image
 
 # SDL2 headless mode
@@ -96,9 +95,10 @@ class SimpleMarioEnv(gym.Env):
     def _get_obs(self):
         # Get screen, crop top bar, convert to grayscale
         rgb = self.screen.ndarray[18:, :, :3]  # Remove top UI bar
-        gray = cv2.cvtColor(rgb, cv2.COLOR_RGB2GRAY)
+        # Convert to grayscale using PIL
+        img = Image.fromarray(rgb, 'RGB').convert('L')
         # Downscale for faster training
-        small = cv2.resize(gray, (80, 72), interpolation=cv2.INTER_AREA)
+        small = np.array(img.resize((80, 72), Image.Resampling.LANCZOS))
         return np.expand_dims(small, axis=-1)
     
     def do_action(self, action_idx):

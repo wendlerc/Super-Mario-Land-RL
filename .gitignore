@@ -179,3 +179,7 @@ cython_debug/
 super_mario_land.gb.ram
 *.gb.*
 .vscode/launch.json
+
+# Don't ignore trained models and results
+!mario_ppo_model.zip
+!*.mp4

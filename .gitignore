@@ -183,3 +183,4 @@ super_mario_land.gb.ram
 # Don't ignore trained models and results
 !mario_ppo_model.zip
 !*.mp4
+venv311/
